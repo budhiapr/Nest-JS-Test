@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -6,6 +6,7 @@ import { ScoresModule } from './scores/scores.module';
 import { PrismaService } from './prisma.services';
 import { LeaderboardsModule } from './leaderboards/leaderboards.module';
 import { AuthModule } from './auth/auth.module';
+import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [UsersModule, ScoresModule, LeaderboardsModule, AuthModule],

@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, NestMiddleware, Req } from '@nestjs/common';
 import { ScoresService } from './scores.service';
 import { CreateScoreDto } from './dto/create-score.dto';
 import { UpdateScoreDto } from './dto/update-score.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { AuthMiddleware } from 'src/auth/auth.middleware';
 
 @Controller('scores')
 export class ScoresController {
@@ -10,8 +11,9 @@ export class ScoresController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createScoreDto: CreateScoreDto) {
-    return this.scoresService.create(createScoreDto);
+  
+  create(@Req() request: Request, @Body() createScoreDto: CreateScoreDto) {
+    return this.scoresService.create(request,createScoreDto);
   }
 
   @Get()
