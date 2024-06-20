@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  username String  @unique
-  name     String
-  password String
-  role     Role    @relation(fields: [roleId], references: [id])
-  roleId   Int
-  scores   Score[]
+  id           Int     @id @default(autoincrement())
+  username     String  @unique
+  name         String
+  password     String
+  refreshToken String?
+  role         Role    @relation(fields: [roleId], references: [id])
+  roleId       Int
+  scores       Score[]
 }
 
 model Role {

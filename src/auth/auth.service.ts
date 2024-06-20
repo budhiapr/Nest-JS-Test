@@ -16,24 +16,44 @@ export class AuthService {
 
   async login(loginAuthDto:LoginAuthDto):Promise<any> {
    const {username, password} = loginAuthDto;
-
-   const users = await this.prisma.user.findUnique({
+   let refreshToken = "";
+  
+   const users = await this.prisma.user.findUniqueOrThrow({
     where:{
       username
     }
    });
 
-   if(!users){
-    throw new NotFoundException('User Not Found');
+   const payload = {
+    id:users.id,
+    username:users.username,
+    name:users.name,
+    roleId:users.roleId
    }
+
 
    const validatepPassword = await bcrypt.compare(password,users.password)
    if(!validatepPassword){
     throw new NotFoundException('Invalid Password');
    }
 
+   if(users.refreshToken == null){
+    refreshToken = this.jwtService.sign(payload,{ expiresIn: '14d' })
+
+    await this.prisma.user.update({
+      data:{
+        refreshToken:refreshToken
+      },
+      where:{
+        id: users.id
+      }
+     });
+   }
+
    return {
-    token: this.jwtService.sign({username})
+    ...payload,
+    token: this.jwtService.sign(payload),
+    refreshToken : refreshToken
    }
 
   }
